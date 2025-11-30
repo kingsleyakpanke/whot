@@ -1,0 +1,316 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Whot NG</title>
+  <meta name="description" content="Nigeria Whot" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="download.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="download.svg">
+  <style>
+    :root{--bg1:#6c3e26;--bg2:#4c2a18;--table:#7a4b2d;--card-bg:#fffdf9;--accent:#8b0f12;--muted:#a49a91;--card-w:88px;--card-h:126px;--shape-size:46px}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;-webkit-font-smoothing:antialiased}
+    body{background:linear-gradient(180deg,var(--bg1),var(--bg2));display:flex;align-items:flex-start;justify-content:center;padding:12px}
+
+    /* Stage */
+    .stage{width:100%;max-width:680px;border-radius:14px;padding:0 12px 18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent), linear-gradient(180deg,#6c4229,#4c2a18);box-shadow:0 32px 80px rgba(0,0,0,0.5);border:1px solid rgba(0,0,0,0.12)}
+
+    /* NAV (new) */
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 8px;border-bottom:1px solid rgba(255,255,255,0.03);gap:8px}
+    .nav-left{display:flex;align-items:center;gap:12px}
+    .brand{color:#fff;font-weight:800;font-size:16px}
+    .logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(180deg,#9b1220,#7b0b12);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-items{display:flex;align-items:center;gap:8px}
+    .nav-item{background:rgba(255,255,255,0.03);color:#fff;border:none;padding:8px 10px;border-radius:10px;font-weight:700}
+    .nav-toggle{display:none;background:transparent;color:#fff;border:none;font-size:20px}
+
+    /* Small screens: collapse nav items */
+    @media(max-width:640px){ .nav-items{display:none;position:absolute;right:12px;top:62px;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.08));padding:8px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.4)} .nav-toggle{display:block} .nav.open .nav-items{display:flex} }
+
+    .top-controls{display:flex;gap:8px;align-items:center}
+    .score-pill{background:rgba(0,0,0,0.2);padding:6px 10px;border-radius:999px;color:#fff;font-weight:800}
+
+    /* Hands */
+    .hand-row{display:flex;flex-direction:column;gap:6px;padding:10px}
+    .hand-label{color:#fff;font-weight:700;font-size:13px;margin-left:6px}
+    .hand{display:flex;gap:10px;overflow:auto;padding:8px 6px}
+
+    /* Table */
+    .table-wrap{display:flex;justify-content:center;align-items:center;margin:4px 0}
+    .table-surface{width:96%;max-width:560px;height:240px;border-radius:16px;background:radial-gradient(circle at 50% 20%, rgba(255,255,255,0.02), rgba(0,0,0,0.07)), linear-gradient(180deg,var(--table), #562f1c);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:14px;margin:8px}
+    .board-center{display:flex;align-items:center;justify-content:center;gap:22px;width:100%}
+    .deck{display:flex;flex-direction:column;align-items:center;gap:8px}
+    .deck .back{width:92px;height:128px;border-radius:12px;background-image:url('data:image/svg+xml;utf8,<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" width="360" height="480" viewBox="0 0 360 480"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#9b1220"/><stop offset="1" stop-color="#7b0b12"/></linearGradient></defs><rect width="360" height="480" rx="18" fill="url(%23g)"/></svg>');background-size:cover;box-shadow:0 10px 30px rgba(0,0,0,0.45);color:white}
+    .deck-count{font-size:12px;color:#fff;font-weight:700}
+    .discard{width:124px;height:164px;border-radius:12px;background:var(--card-bg);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 36px rgba(0,0,0,0.45);position:relative}
+
+    .need-badge{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.32);padding:8px 12px;border-radius:12px;color:#fff;font-weight:900;display:flex;align-items:center;gap:8px}
+
+    /* Card */
+    .card{width:var(--card-w);height:var(--card-h);border-radius:10px;background:var(--card-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;color:#6b0f12;font-weight:800;flex-shrink:0;backface-visibility:hidden}
+    .card.small{width:66px;height:94px}
+    .num{font-size:16px}
+    .shape{font-size:var(--shape-size);line-height:1}
+    .shape-Circle{color:#c62828}
+    .shape-Cross{color:#2e7d32}
+    .shape-Triangle{color:#1565c0}
+    .shape-Square{color:#ff8f00}
+    .shape-Star{color:#6a1b9a}
+
+    .playable{outline:4px solid rgba(139,15,18,0.12);transform:translateY(-8px)}
+    .hintPulse{box-shadow:0 0 0 12px rgba(139,15,18,0.12)}
+
+    /* Animations */
+    .card-clone{position:fixed;z-index:9999;will-change:transform,opacity}
+    @keyframes shake {0%{transform:translateX(0)}20%{transform:translateX(-6px)}60%{transform:translateX(6px)}100%{transform:translateX(0)}}
+    .shake{animation:shake 520ms ease-in-out}
+    .flipped{transform:rotateY(0deg)}
+
+    /* HUD */
+    .status{display:block;text-align:center;padding:8px 12px;border-radius:12px;color:#fff;font-weight:800;background:rgba(0,0,0,0.2);margin:8px}
+    .controls-row{display:flex;justify-content:space-between;padding:8px 12px}
+    .small-btn{background:var(--card-bg);border-radius:10px;padding:8px 12px;border:none;font-weight:700;color:#6b0f12}
+
+    @media(min-width:720px){ :root{--card-w:100px;--card-h:140px;--shape-size:56px} .table-surface{height:320px} }
+    /* subtle transitions */
+    .card, .discard { transition: transform 260ms cubic-bezier(.2,.9,.2,1), box-shadow 200ms }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <!-- NAV BAR -->
+    <nav class="nav" id="mainNav" role="navigation" aria-label="Main navigation">
+      <div class="nav-left">
+        <div class="logo">
+  <img src="download.svg" alt="Naija Whot Logo" class="brand">
+          </div>
+
+      <div class="nav-left">
+        <button id="navToggle" class="nav-toggle" aria-expanded="false" aria-controls="navItems">☰</button>
+        <div class="nav-items" id="navItems">
+          <button id="tutorialBtn" class="nav-item" title="Open tutorial">📖 Tutorial</button>
+          <button id="muteBtn" class="nav-item" title="Mute / Unmute">🔊</button>
+          <select id="difficulty" class="nav-item" title="AI Difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+          <button id="statsBtn" class="nav-item" title="Stats">📊 Stats</button>
+          <button id="downloadAds" class="nav-item" title="Download app-ads.txt">ads.txt</button>
+          <button id="settingsBtn" class="nav-item" title="Settings">⚙️</button>
+          <!-- <a href="about.html" class="nav-item">About</a>
+          <a href="privacy.html" class="nav-item">Privacy</a>
+          <a href="contact.html" class="nav-item">Contact</a> -->
+        </div>
+      </div>
+    </nav>
+
+    <!-- Scoreboard (compact) -->
+    <div style="display:flex;gap:8px;align-items:center;padding:8px 6px">
+      <div id="scoreboard" class="score-pill" aria-live="polite">Wins 0 | Loss 0 | Streak 0</div>
+    </div>
+
+    <!-- Computer hand -->
+    <div class="hand-row">
+      <div class="hand-label">Computer</div>
+      <div id="compHand" class="hand" aria-hidden="true"></div>
+    </div>
+
+    <!-- Single central board -->
+    <div class="table-wrap">
+      <div class="table-surface" id="tableSurface" role="application" aria-label="Whot table surface">
+        <div class="board-center">
+          <div class="deck" id="deck">
+            <div class="back" aria-hidden="true"></div>
+            <div class="deck-count" id="deckCount">0</div>
+          </div>
+
+          <div id="discard" class="discard" aria-live="polite"></div>
+        </div>
+
+        <div id="needBadge" class="need-badge" style="display:none"><div id="needIcon">●</div><div id="needText">Need: Circle</div></div>
+      </div>
+    </div>
+
+    <!-- Player hand -->
+    <div class="hand-row">
+      <div class="hand-label">You</div>
+      <div id="playerHand" class="hand"></div>
+    </div>
+
+    <div style="display:flex;justify-content:center;margin-top:10px"><div id="status" class="status">Ready</div></div>
+
+    <div class="controls-row">
+      <div style="display:flex;gap:8px"><button id="startBtn" class="small-btn">Start</button><button id="drawBtn" class="small-btn">Draw</button><button id="hintBtn" class="small-btn">Hint</button></div>
+      <div style="display:flex;gap:8px"><button id="replayDemoBtn" class="small-btn">Replay Demo</button></div>
+    </div>
+  </div>
+
+  <!-- Modal root for tutorial, stats, and other overlays -->
+  <div id="modalRoot"></div>
+
+  <script>
+  (function(){ 'use strict';
+    /* ---------- Constants ---------- */
+    const SHAPES = ['Circle','Cross','Triangle','Square','Star'];
+    const NUMBERS = [1,2,3,4,5,7,8,10,11,12,13,14];
+    const SHAPE_ICON = { Circle:'●', Cross:'✚', Triangle:'▲', Square:'■', Star:'★' };
+
+    /* ---------- DOM refs ---------- */
+    const $ = id => document.getElementById(id);
+    const nav = $('mainNav'); const navToggle = $('navToggle'); const navItems = $('navItems');
+    const tutorialBtn = $('tutorialBtn'); const muteBtn = $('muteBtn'); const difficultySel = $('difficulty');
+    const statsBtn = $('statsBtn'); const downloadAdsBtn = $('downloadAds'); const settingsBtn = $('settingsBtn');
+
+    const compHandEl = $('compHand'), playerHandEl = $('playerHand');
+    const discardEl = $('discard'), deckCountEl = $('deckCount'), needBadge = $('needBadge');
+    const needIcon = $('needIcon'), needText = $('needText'), statusEl = $('status');
+    const scoreboardEl = $('scoreboard'); const modalRoot = $('modalRoot');
+
+    /* ---------- State ---------- */
+    let deck = [], discard = [], players = [], current = 0; let gameActive = false, waitingChoice = false;
+    let activePick = null, pick2Total = 0, pick5Total = 0, lastPlayedBy = null;
+
+    /* ---------- Audio engine ---------- */
+    const AudioEngine = (function(){ let ctx=null, master=null; let muted = (localStorage.getItem('whot_muted')==='1'); function ensure(){ if(!ctx){ ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.connect(ctx.destination); master.gain.value = muted?0:1; }} function setMuted(v){ ensure(); muted = v; master.gain.value = muted?0:1; localStorage.setItem('whot_muted', muted? '1':'0'); muteBtn.textContent = muted? '🔇':'🔊'; } function playTone(freq, time=0.06, type='sine', vol=0.25){ ensure(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = type; o.frequency.value = freq; o.connect(g); g.connect(master); g.gain.value = vol; const now = ctx.currentTime; o.start(now); g.gain.setValueAtTime(vol, now); g.gain.exponentialRampToValueAtTime(0.0001, now + time); o.stop(now + time + 0.02); } function slap(){ playTone(600, 0.08, 'square', 0.28); playTone(300, 0.14, 'sawtooth', 0.12); } function draw(){ playTone(420, 0.08, 'sine', 0.14); } function win(){ playTone(880,0.12,'sine',0.26); playTone(1320,0.14,'sine',0.18); } function click(){ playTone(620,0.04,'square',0.08); } muteBtn.textContent = (localStorage.getItem('whot_muted')==='1')? '🔇':'🔊'; muteBtn.addEventListener('click', ()=> setMuted(!(localStorage.getItem('whot_muted')==='1'))); return {slap, draw, win, click, setMuted}; })();
+
+    /* ---------- Local stats ---------- */
+    const Stats = (function(){ const KEY='whot_stats_v1'; function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)||'{}'); return Object.assign({wins:0,losses:0,currentStreak:0,bestStreak:0}, s); }catch(e){return {wins:0,losses:0,currentStreak:0,bestStreak:0}; }} function save(s){ localStorage.setItem(KEY, JSON.stringify(s)); } let state = load(); function reset(){ state = {wins:0,losses:0,currentStreak:0,bestStreak:0}; save(state); render(); } function record(win){ if(win){ state.wins++; state.currentStreak = (state.currentStreak>=0? state.currentStreak+1 : 1); if(state.currentStreak>state.bestStreak) state.bestStreak = state.currentStreak; } else { state.losses++; state.currentStreak = (state.currentStreak<=0? state.currentStreak-1 : -1); } save(state); render(); } function render(){ scoreboardEl.textContent = `Wins ${state.wins} | Losses ${state.losses} | Streak ${state.currentStreak>0? '+'+state.currentStreak: state.currentStreak}`; } render(); return {record, reset, state}; })();
+
+    statsBtn.addEventListener('click', ()=> openStatsModal());
+    downloadAdsBtn.addEventListener('click', ()=>{ const line='google.com, pub-1107311557690847, DIRECT, f08c47fec0942fa0'; const blob=new Blob([line+''],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='app-ads.txt'; a.click(); URL.revokeObjectURL(a.href); showStatus('Downloaded app-ads.txt'); });
+
+    /* ---------- Deck helpers ---------- */
+    function createDeck(){ const d=[]; SHAPES.forEach(s=> NUMBERS.forEach(n=> d.push({shape:s,number:n,whot:false,id:`${s}-${n}-${Math.random().toString(36).slice(2,8)}`}))); for(let i=0;i<6;i++) d.push({shape:'WHOT',number:20,whot:true,id:`WHOT-${i}`}); return shuffle(d); }
+    function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+    function drawFromDeck(){ if(deck.length===0) refillDeck(); const c = deck.pop(); AudioEngine.draw(); return c; }
+    function drawN(n){ const out=[]; for(let i=0;i<n;i++) out.push(drawFromDeck()); return out; }
+    function refillDeck(){ if(discard.length<=1) return; const top = discard.pop(); deck = shuffle(discard.splice(0)); discard = [top]; showStatus('Deck reshuffled'); renderAll(); }
+
+    /* ---------- Rendering ---------- */
+    function renderAll(){ renderHands(); renderBoard(); }
+
+    function renderHands(){ compHandEl.innerHTML = ''; players[1].hand.forEach(()=>{ const el = document.createElement('div'); el.className='card back small'; compHandEl.appendChild(el); }); playerHandEl.innerHTML = ''; players[0].hand.forEach((c,i)=>{ const el = makeCardEl(c); el.dataset.index = i; if(isPlayable(c,0)) el.classList.add('playable'); el.addEventListener('click', onPlayerCardClick); playerHandEl.appendChild(el); }); }
+
+    function renderBoard(){ discardEl.innerHTML = ''; const top = getTop(); if(top){ const el = makeCardEl(top); el.style.transform='scale(1.02)'; discardEl.appendChild(el); } deckCountEl.textContent = deck.length; if(top && top.whot && top.chosen){ needBadge.style.display='flex'; needIcon.textContent = (top.chosen.type==='shape'? SHAPE_ICON[top.chosen.val] : '20'); needText.textContent = `${lastPlayedBy===1? 'Computer needs:' : lastPlayedBy===0? 'You need:' : 'Need:' } ${ top.chosen.type==='shape'? top.chosen.val : '#'+top.chosen.val }`; } else { needBadge.style.display='none'; } }
+
+    function makeCardEl(card){ const el = document.createElement('div'); el.className = 'card'; if(card.whot){ el.innerHTML = `<div class="num">WHOT</div><div class="shape" style="font-size:36px">W</div>`; return el; } el.innerHTML = `<div class="num">${card.number}</div><div class="shape shape-${card.shape}">${SHAPE_ICON[card.shape]}</div><div style="font-size:11px;color:#6b0f12;margin-top:6px">${card.shape}</div>`; return el; }
+
+    function showStatus(txt){ statusEl.textContent = txt; }
+    function getTop(){ return discard[discard.length-1]; }
+
+    /* ---------- Animations ---------- */
+    function animateClone(fromRect, toRect, cardEl, options={flip:false}){ return new Promise(resolve=>{ const clone = cardEl.cloneNode(true); clone.className = 'card card-clone'; document.body.appendChild(clone); clone.style.width = fromRect.width + 'px'; clone.style.height = fromRect.height + 'px'; clone.style.left = fromRect.left + 'px'; clone.style.top = fromRect.top + 'px'; clone.style.position = 'fixed'; clone.style.transition = 'transform 420ms cubic-bezier(.2,.9,.2,1), left 420ms, top 420ms, opacity 300ms'; void clone.offsetWidth; clone.style.left = toRect.left + 'px'; clone.style.top = toRect.top + 'px'; clone.style.transform = 'translateZ(0) scale(1)'; if(options.flip){ setTimeout(()=> clone.classList.add('flipped'), 220); } clone.addEventListener('transitionend', function te(e){ if(e.propertyName==='top' || e.propertyName==='left'){ clone.removeEventListener('transitionend', te); setTimeout(()=>{ clone.remove(); resolve(); }, 60); } }); }); }
+
+    function flyCardFromElementToDiscard(sourceEl){ const from = sourceEl.getBoundingClientRect(); const toRect = discardEl.getBoundingClientRect(); return animateClone(from, toRect, sourceEl, {flip:true}); }
+
+    function dealToHandAnimation(targetEl){ const deckEl = document.querySelector('.deck .back'); const deckRect = deckEl.getBoundingClientRect(); const targetRect = targetEl.getBoundingClientRect(); const fake = document.createElement('div'); fake.className='card card-clone back'; fake.style.width = deckRect.width + 'px'; fake.style.height = deckRect.height + 'px'; fake.style.left = deckRect.left + 'px'; fake.style.top = deckRect.top + 'px'; fake.style.position='fixed'; fake.style.zIndex=9999; document.body.appendChild(fake); requestAnimationFrame(()=>{ fake.style.transition='transform 520ms cubic-bezier(.2,.9,.2,1), left 520ms, top 520ms, opacity 260ms'; fake.style.left = targetRect.left + 'px'; fake.style.top = targetRect.top + 'px'; fake.style.transform='translateZ(0) scale(1)'; }); return new Promise(res=>{ fake.addEventListener('transitionend', function te(e){ if(e.propertyName==='top'){ fake.removeEventListener('transitionend', te); fake.remove(); res(); } }); }); }
+
+    function shakeDiscard(){ discardEl.classList.add('shake'); setTimeout(()=> discardEl.classList.remove('shake'), 560); }
+
+    /* ---------- Game rules & flows ---------- */
+    function isPlayable(card, playerIdx){ if(activePick==='2') return !card.whot && card.number===2; if(activePick==='5') return !card.whot && card.number===5; const top = getTop(); if(card.whot) return true; if(!top) return true; if(top.whot && top.chosen){ if(top.chosen.type==='shape') return card.shape===top.chosen.val || card.number===top.number; if(top.chosen.type==='number') return card.number===top.chosen.val || card.whot; } return card.shape===top.shape || (top.number!==null && card.number===top.number); }
+
+    async function onPlayerCardClick(e){ const el = e.currentTarget; const idx = +el.dataset.index; const card = players[0].hand[idx]; if(!isPlayable(card,0) || waitingChoice || !gameActive) return showStatus('Card not playable'); await flyCardFromElementToDiscard(el); playCard(0, idx); AudioEngine.slap(); }
+
+    function playCard(playerIdx, cardIdx){ const player = players[playerIdx]; const card = player.hand.splice(cardIdx,1)[0]; const played = Object.assign({}, card); discard.push(played); lastPlayedBy = playerIdx; renderAll(); showStatus(`${player.name} played ${played.whot? 'WHOT' : (played.number + ' - ' + played.shape)}`);
+      if(played.whot){ if(player.isHuman){ waitingChoice = true; showWhotModal(choice=>{ played.chosen = choice; discard[discard.length-1] = played; waitingChoice=false; renderAll(); nextAfterPlay(playerIdx); }); } else { const chosen = aiChooseWhotChoice(player); played.chosen = chosen; discard[discard.length-1] = played; renderAll(); nextAfterPlay(playerIdx); } return; }
+      if(played.number===1){ showStatus(`${player.name} holds on and plays again`); renderAll(); setTimeout(()=> processTurn(), 420); return; }
+      if(played.number===2){ pick2Total += 2; activePick = '2'; showStatus(`Pick 2 — stack ${pick2Total}`); nextAfterPlay(playerIdx); return; }
+      if(played.number===5){ pick5Total += 3; activePick = '5'; showStatus(`Pick 3 — stack ${pick5Total}`); nextAfterPlay(playerIdx); return; }
+      if(played.number===8){ showStatus('Suspension — next will be skipped'); nextAfterPlay(playerIdx); return; }
+      if(played.number===14){ showStatus('General Market — others draw 1'); for(let i=0;i<players.length;i++) if(i!==playerIdx) players[i].hand.push(...drawN(1)); renderAll(); nextAfterPlay(playerIdx); return; }
+      nextAfterPlay(playerIdx);
+    }
+
+    function nextAfterPlay(playerIdx){ current = (playerIdx + 1) % players.length; processTurn(); }
+
+    function processTurn(){ renderAll(); if(checkWin()) return; const player = players[current]; showStatus(`${player.name}'s turn${ activePick ? ' (stack active)' : '' }`);
+      if(player.isHuman){ if(activePick){ const need = activePick==='2'?2:5; const canDefend = player.hand.some(c=> !c.whot && c.number===need); if(!canDefend){ setTimeout(()=>{ const amt = activePick==='2'? pick2Total : pick5Total; players[0].hand.push(...drawN(amt)); showStatus(`${player.name} drew ${amt} cards`); AudioEngine.draw(); pick2Total=0; pick5Total=0; activePick=null; shakeDiscard(); current=(current+1)%players.length; renderAll(); processTurn(); },700); } return; } return; }
+      setTimeout(()=> aiTakeTurn(current), 620);
+    }
+
+    /* ---------- AI ---------- */
+    async function aiTakeTurn(aiIdx){ const ai = players[aiIdx]; const difficulty = difficultySel.value || 'medium'; if(activePick){ const needNum = activePick==='2'?2:5; const idx = ai.hand.findIndex(c=> !c.whot && c.number===needNum); if(idx>=0){ if(difficulty==='easy' && Math.random()<0.18){ const amt = activePick==='2'?pick2Total:pick5Total; ai.hand.push(...drawN(amt)); showStatus(`Computer blundered and drew ${amt}`); AudioEngine.draw(); pick2Total=0; pick5Total=0; activePick=null; current=(current+1)%players.length; renderAll(); processTurn(); return; } const compCardEl = compHandEl.children[idx] || compHandEl.children[0]; if(compCardEl) await animateClone(compCardEl.getBoundingClientRect(), discardEl.getBoundingClientRect(), compCardEl, {flip:false}); playCard(aiIdx, idx); AudioEngine.slap(); return; } const amt = activePick==='2'?pick2Total:pick5Total; ai.hand.push(...drawN(amt)); showStatus(`Computer drew ${amt}`); AudioEngine.draw(); pick2Total=0; pick5Total=0; activePick=null; current=(current+1)%players.length; renderAll(); processTurn(); return; }
+
+      const playable = ai.hand.map((c,i)=> isPlayable(c,aiIdx)?i:-1).filter(i=>i>=0);
+      if(playable.length===0){ if(deck.length===0) refillDeck(); ai.hand.push(drawFromDeck()); renderAll(); const newPlayable = ai.hand.map((c,i)=> isPlayable(c,aiIdx)?i:-1).filter(i=>i>=0); if(newPlayable.length>0){ const choice = difficulty==='hard'? chooseBestForAI(ai,newPlayable) : (difficulty==='medium'? newPlayable[0] : newPlayable[Math.floor(Math.random()*newPlayable.length)]); const compCardEl = compHandEl.children[choice] || compHandEl.children[0]; if(compCardEl) await animateClone(compCardEl.getBoundingClientRect(), discardEl.getBoundingClientRect(), compCardEl, {flip:false}); playCard(aiIdx, choice); AudioEngine.slap(); return; } current=(current+1)%players.length; renderAll(); processTurn(); return; }
+
+      let choice;
+      if(difficulty==='easy'){ choice = playable[Math.floor(Math.random()*playable.length)]; }
+      else if(difficulty==='medium'){ choice = pickBestByPriority(ai.hand, playable); if(Math.random()<0.12) choice = playable[Math.floor(Math.random()*playable.length)]; }
+      else { choice = chooseBestForAI(ai, playable); }
+      const compCardEl = compHandEl.children[choice] || compHandEl.children[0]; if(compCardEl) await animateClone(compCardEl.getBoundingClientRect(), discardEl.getBoundingClientRect(), compCardEl, {flip:false}); playCard(aiIdx, choice); AudioEngine.slap();
+    }
+
+    /* ---------- AI helpers ---------- */
+    function pickBestByPriority(hand, playableIdxs){ const idx5 = playableIdxs.find(i=> hand[i].number===5); if(idx5!==undefined) return idx5; const idx2 = playableIdxs.find(i=> hand[i].number===2); if(idx2!==undefined) return idx2; const idx1 = playableIdxs.find(i=> hand[i].number===1); if(idx1!==undefined) return idx1; const counts={}; SHAPES.forEach(s=>counts[s]=0); for(const c of hand) if(!c.whot) counts[c.shape]++; let best = playableIdxs[0], bestScore=-1; for(const i of playableIdxs){ const c = hand[i]; const sc = c.whot?0:counts[c.shape]; if(sc>bestScore){ bestScore=sc; best=i; }} return best; }
+
+    function chooseBestForAI(ai, playableIdxs){ let bestIdx = playableIdxs[0]; let bestScore = -Infinity; for(const idx of playableIdxs){ const card = ai.hand[idx]; const simulatedTop = Object.assign({}, card); if(card.whot) simulatedTop.chosen = aiChooseWhotChoice(ai); const opp = players[(current+1)%players.length]; let oppPlayable=0; for(const c of opp.hand) if(isPlayableAgainstTop(c, simulatedTop)) oppPlayable++; let aiSame=0; for(const c of ai.hand) if(c!==card && !c.whot && c.shape === (simulatedTop.chosen && simulatedTop.chosen.type==='shape'? simulatedTop.chosen.val : simulatedTop.shape)) aiSame++; const score = (-oppPlayable * 7) + (aiSame * 4) + ((ai.hand.length -1) * -1); if(score>bestScore){ bestScore=score; bestIdx=idx; } } return bestIdx; }
+
+    function isPlayableAgainstTop(card, top){ if(top.whot && top.chosen){ if(top.chosen.type==='shape') return card.shape===top.chosen.val || card.whot; if(top.chosen.type==='number') return card.number===top.chosen.val || card.whot; } return card.whot || card.shape===top.shape || (top.number!==null && card.number===top.number); }
+
+    function aiChooseWhotChoice(ai){ let best = {type:'shape', val:SHAPES[0], score:-Infinity}; for(const s of SHAPES){ const aiCount = ai.hand.filter(c=> !c.whot && c.shape===s).length; const oppCount = players[(current+1)%players.length].hand.filter(c=> !c.whot && c.shape===s).length; const sc = (aiCount*3) - (oppCount*4); if(sc>best.score) best={type:'shape', val:s, score:sc}; } for(const n of NUMBERS){ const aiCount = ai.hand.filter(c=> !c.whot && c.number===n).length; const oppCount = players[(current+1)%players.length].hand.filter(c=> !c.whot && c.number===n).length; const sc = (aiCount*4) - (oppCount*6); if(sc>best.score) best={type:'number', val:n, score:sc}; } return {type:best.type, val:best.val}; }
+
+    /* ---------- WHOT modal ---------- */
+    function showWhotModal(onChoose){ modalRoot.innerHTML = ''; const overlay = document.createElement('div'); overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.background='rgba(0,0,0,0.45)'; overlay.style.display='flex'; overlay.style.alignItems='center'; overlay.style.justifyContent='center'; const box = document.createElement('div'); box.style.background='white'; box.style.padding='16px'; box.style.borderRadius='12px'; box.style.width='min(94%,420px)'; box.innerHTML = `<div style="font-weight:800;font-size:16px;margin-bottom:8px">WHOT — choose shape or number</div><div style="color:#666;margin-bottom:8px">Choose a shape to demand, or pick a number (1-14 excluding 6 & 9)</div>`; const grid = document.createElement('div'); grid.style.display='flex'; grid.style.gap='8px'; grid.style.flexWrap='wrap'; SHAPES.forEach(s=>{ const b = document.createElement('button'); b.style.flex='1'; b.style.minWidth='100px'; b.style.padding='10px'; b.style.borderRadius='8px'; b.style.border='1px solid #eee'; b.style.background='white'; b.innerHTML = `<div style="font-size:22px">${SHAPE_ICON[s]}</div><div style="font-weight:700;color:#6b0f12;margin-top:6px">${s}</div>`; b.addEventListener('click', ()=>{ modalRoot.innerHTML=''; onChoose({type:'shape', val:s}); }); grid.appendChild(b); }); box.appendChild(grid); const numRow = document.createElement('div'); numRow.style.marginTop='12px'; numRow.innerHTML = '<div style="font-weight:700;margin-bottom:6px">Or choose a number (1 - 14; excluding 6 & 9)</div>'; const input = document.createElement('input'); input.type='number'; input.min='1'; input.max='14'; input.placeholder='Number (no 6/9)'; input.style.padding='8px'; input.style.width='100%'; input.style.borderRadius='8px'; input.style.border='1px solid #eee'; const confirm = document.createElement('button'); confirm.textContent='Confirm number'; confirm.style.marginTop='8px'; confirm.style.width='100%'; confirm.style.padding='10px'; confirm.style.background='#8b0f12'; confirm.style.color='white'; confirm.style.border='none'; confirm.style.borderRadius='8px'; confirm.addEventListener('click', ()=>{ const v = parseInt(input.value,10); if(!v || v<1 || v>14 || v===6 || v===9){ alert('Enter a valid number (1-14 excluding 6 & 9)'); return; } modalRoot.innerHTML=''; onChoose({type:'number', val:v}); }); numRow.appendChild(input); numRow.appendChild(confirm); box.appendChild(numRow); overlay.appendChild(box); modalRoot.appendChild(overlay); }
+
+    /* ---------- Hint ---------- */
+    function playerHint(){ if(!gameActive) return; if(activePick){ const need = activePick==='2'?2:5; const idx = players[0].hand.findIndex(c=> !c.whot && c.number===need); if(idx>=0){ const el = playerHandEl.querySelector(`[data-index='${idx}']`); el.classList.add('hintPulse'); el.scrollIntoView({behavior:'smooth', inline:'center'}); setTimeout(()=> el.classList.remove('hintPulse'),1500); showStatus('Hint: play defend card'); return; } showStatus('No defend card — you will draw the stack'); return; } const playable = players[0].hand.map((c,i)=> isPlayable(c,0)?i:-1).filter(i=>i>=0); if(playable.length===0){ showStatus('No playable cards'); return; } let best = playable[0], bestScore = Infinity; for(const idx of playable){ const card = players[0].hand[idx]; const top = Object.assign({}, card); if(card.whot) top.chosen = {type:'shape', val: chooseBestShapeForPlayer(players[0])}; const opp = players[1]; let oppPlayable = 0; for(const c of opp.hand) if(isPlayableAgainstTop(c, top)) oppPlayable++; if(oppPlayable < bestScore){ bestScore = oppPlayable; best = idx; } } const el = playerHandEl.querySelector(`[data-index='${best}']`); el.classList.add('hintPulse'); el.scrollIntoView({behavior:'smooth', inline:'center'}); setTimeout(()=> el.classList.remove('hintPulse'),1500); showStatus('Hint shown'); }
+
+    /* ---------- Stats modal ---------- */
+    function openStatsModal(){ modalRoot.innerHTML = ''; const ov = document.createElement('div'); ov.style.position='fixed'; ov.style.inset='0'; ov.style.background='rgba(0,0,0,0.55)'; ov.style.display='flex'; ov.style.alignItems='center'; ov.style.justifyContent='center'; const box = document.createElement('div'); box.style.background='white'; box.style.padding='16px'; box.style.borderRadius='12px'; box.style.width='min(92%,420px)'; box.innerHTML = `<div style="font-weight:800;font-size:18px;margin-bottom:8px">Your Stats</div><div style="margin-bottom:10px">Wins: ${Stats.state.wins} <br> Losses: ${Stats.state.losses} <br> Current Streak: ${Stats.state.currentStreak} <br> Best Streak: ${Stats.state.bestStreak}</div>`; const reset = document.createElement('button'); reset.textContent = 'Reset Stats'; reset.style.background='#eee'; reset.style.border='none'; reset.style.padding='8px 10px'; reset.style.borderRadius='8px'; reset.addEventListener('click', ()=>{ if(confirm('Reset local stats?')){ Stats.reset(); modalRoot.innerHTML=''; } }); const close = document.createElement('button'); close.textContent='Close'; close.style.marginLeft='8px'; close.style.background='#8b0f12'; close.style.color='white'; close.style.border='none'; close.style.padding='8px 10px'; close.style.borderRadius='8px'; close.addEventListener('click', ()=> modalRoot.innerHTML=''); box.appendChild(reset); box.appendChild(close); ov.appendChild(box); modalRoot.appendChild(ov); }
+
+    /* ---------- Tutorial overlay & demo ---------- */
+    function openTutorial(){ modalRoot.innerHTML = ''; const ov = document.createElement('div'); ov.style.position='fixed'; ov.style.inset='0'; ov.style.background='rgba(0,0,0,0.6)'; ov.style.display='flex'; ov.style.alignItems='center'; ov.style.justifyContent='center'; const box = document.createElement('div'); box.style.width='min(96%,720px)'; box.style.maxWidth='680px'; box.style.background='white'; box.style.padding='18px'; box.style.borderRadius='12px'; box.style.color='#222'; box.innerHTML = `<h3 style="margin-top:0">How to play Nigeria Whot — Quick Tutorial</h3>
+        <ol>
+          <li>Match shape or number. WHOT (20) lets you choose a shape or number.</li>
+          <li>2 = Pick 2 (defend only with 2). 5 = Pick 3 (defend only with 5).</li>
+          <li>1 = Hold on (play again). 8 = Suspension (skip next). 14 = General Market (others draw 1).</li>
+          <li>No 6 or 9 in this deck. Hint button gives contextual help.</li>
+        </ol>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button id="demoPlay" style="padding:8px 12px;background:#8b0f12;color:#fff;border:none;border-radius:8px">Replay demo</button><button id="closeTut" style="padding:8px 12px;background:#eee;border:none;border-radius:8px">Close</button></div>`; ov.appendChild(box); modalRoot.appendChild(ov); $('closeTut').addEventListener('click', ()=> modalRoot.innerHTML=''); $('demoPlay').addEventListener('click', ()=>{ modalRoot.innerHTML=''; playDemoSequence(); }); }
+
+    async function playDemoSequence(){ // lightweight demo: show need overlay then hide
+      needBadge.style.display='flex'; needIcon.textContent = SHAPE_ICON['Triangle']; needText.textContent = 'Computer needs: Triangle'; showStatus('Demo: Computer plays WHOT'); await new Promise(r=>setTimeout(r,1600)); needBadge.style.display='none'; showStatus('Demo finished'); }
+
+    /* ---------- Check win ---------- */
+    function checkWin(){ for(let i=0;i<players.length;i++) if(players[i].hand.length===0){ gameActive=false; showEnd(`${players[i].name} wins!`); Stats.record(i===0); if(i===0) AudioEngine.win(); return true; } return false; }
+    function showEnd(txt){ showStatus(txt); modalRoot.innerHTML = ''; const ov = document.createElement('div'); ov.style.position='fixed'; ov.style.inset='0'; ov.style.display='flex'; ov.style.alignItems='center'; ov.style.justifyContent='center'; ov.style.background='rgba(0,0,0,0.45)'; const box = document.createElement('div'); box.style.background='white'; box.style.padding='18px'; box.style.borderRadius='12px'; box.style.textAlign='center'; box.innerHTML = `<div style="font-weight:800;font-size:18px;margin-bottom:8px">${txt}</div><div style="margin-bottom:12px;color:#666">Wins: ${Stats.state.wins} | Losses: ${Stats.state.losses} | Streak: ${Stats.state.currentStreak}</div>`; const b = document.createElement('button'); b.textContent='Play again'; b.style.padding='10px 14px'; b.style.background='#8b0f12'; b.style.color='white'; b.style.border='none'; b.style.borderRadius='8px'; b.addEventListener('click', ()=>{ modalRoot.innerHTML=''; startGame(); }); box.appendChild(b); ov.appendChild(box); modalRoot.appendChild(ov); }
+
+    /* ---------- Player draw ---------- */
+    function playerDraw(){ if(activePick){ showStatus('Stack active — defend or draw the stack'); return; } if(deck.length===0) refillDeck(); players[0].hand.push(drawFromDeck()); showStatus('You drew a card'); renderAll(); current = (current+1)%players.length; processTurn(); }
+
+    /* ---------- Public controls wiring ---------- */
+    $('startBtn').addEventListener('click', ()=> startGame(true));
+    $('drawBtn').addEventListener('click', playerDraw);
+    $('hintBtn').addEventListener('click', playerHint);
+    tutorialBtn.addEventListener('click', openTutorial);
+    $('replayDemoBtn').addEventListener('click', playDemoSequence);
+
+    /* nav toggle */
+    navToggle.addEventListener('click', ()=>{ const open = nav.classList.toggle('open'); navToggle.setAttribute('aria-expanded', open? 'true':'false'); });
+
+    /* ---------- Helper utilities ---------- */
+    function chooseBestShapeForPlayer(player){ const counts={}; SHAPES.forEach(s=>counts[s]=0); for(const c of player.hand) if(!c.whot) counts[c.shape]++; let best=SHAPES[0], bc=-1; for(const s of SHAPES) if(counts[s]>bc){ bc=counts[s]; best=s; } return best; }
+
+    function isPlayableAgainstTop(card, top){ if(top.whot && top.chosen){ if(top.chosen.type==='shape') return card.shape===top.chosen.val || card.whot; if(top.chosen.type==='number') return card.number===top.chosen.val || card.whot; } return card.whot || card.shape===top.shape || (top.number!==null && card.number===top.number); }
+
+    /* ---------- Start & demo init ---------- */
+    function startGame(withDeal=false){ deck = createDeck(); discard = []; players = [{name: prompt('Enter your name','You')||'You',hand:[],isHuman:true},{name:'Computer',hand:[],isHuman:false}]; current=0; activePick=null; pick2Total=0; pick5Total=0; waitingChoice=false; gameActive=true; lastPlayedBy=null; for(let i=0;i<7;i++) players.forEach(p=> p.hand.push(deck.pop())); let top = deck.pop(); while(top && top.whot){ discard.push(top); top = deck.pop(); } if(!top) top = {shape:SHAPES[0], number:NUMBERS[0], whot:false}; discard.push(top); renderAll(); showStatus(`${players[current].name}'s turn`); processTurn(); }
+
+    function renderInitialDemo(){ deck = createDeck(); players = [{name:'You',hand:[],isHuman:true},{name:'Computer',hand:[],isHuman:false}]; for(let i=0;i<5;i++){ players[0].hand.push(deck.pop()); players[1].hand.push(deck.pop()); } discard.push(deck.pop()); renderAll(); showStatus('Ready — press Start'); }
+
+    /* expose small debug */
+    window.__whot = { startGame, renderAll };
+
+    // initialize
+    renderInitialDemo();
+
+  })();
+  </script>
+</body>
+</html>
