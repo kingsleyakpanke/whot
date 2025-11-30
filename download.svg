@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- Outer Circle Badge -->
+  <circle cx="200" cy="200" r="180" fill="white" stroke="#008753" stroke-width="20"></circle>
+  
+  <!-- Shapes around edge -->
+  <text x="200" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#DAA520">●</text>
+  <text x="360" y="200" text-anchor="middle" font-size="28" font-weight="bold" fill="#DAA520">✚</text>
+  <text x="200" y="380" text-anchor="middle" font-size="28" font-weight="bold" fill="#DAA520">▲</text>
+  <text x="40" y="200" text-anchor="middle" font-size="28" font-weight="bold" fill="#DAA520">■</text>
+  <text x="200" y="110" text-anchor="middle" font-size="40" font-weight="bold" fill="#DAA520">★</text>
+  
+  <!-- Central Text -->
+  <text x="200" y="210" text-anchor="middle" font-size="42" font-weight="900" fill="#008753" font-family="Arial Black, sans-serif">
+    Naija
+  </text>
+  <text x="200" y="260" text-anchor="middle" font-size="42" font-weight="900" fill="#DAA520" font-family="Arial Black, sans-serif">
+    Whot
+  </text>
+</svg>
