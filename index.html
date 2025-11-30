@@ -302,7 +302,7 @@
     /* ---------- Start & demo init ---------- */
     function startGame(withDeal=false){ deck = createDeck(); discard = []; players = [{name: prompt('Enter your name','You')||'You',hand:[],isHuman:true},{name:'Computer',hand:[],isHuman:false}]; current=0; activePick=null; pick2Total=0; pick5Total=0; waitingChoice=false; gameActive=true; lastPlayedBy=null; for(let i=0;i<7;i++) players.forEach(p=> p.hand.push(deck.pop())); let top = deck.pop(); while(top && top.whot){ discard.push(top); top = deck.pop(); } if(!top) top = {shape:SHAPES[0], number:NUMBERS[0], whot:false}; discard.push(top); renderAll(); showStatus(`${players[current].name}'s turn`); processTurn(); }
 
-    function renderInitialDemo(){ deck = createDeck(); players = [{name:'You',hand:[],isHuman:true},{name:'Computer',hand:[],isHuman:false}]; for(let i=0;i<5;i++){ players[0].hand.push(deck.pop()); players[1].hand.push(deck.pop()); } discard.push(deck.pop()); renderAll(); showStatus('Ready — press Start'); }
+    function renderInitialDemo(){ deck = createDeck(); players = [{name:'You',hand:[],isHuman:true},{name:'Computer',hand:[],isHuman:false}]; for(let i=0;i<5;i++){ players[0].hand.push(deck.pop()); players[1].hand.push(deck.pop()); } discard.push(deck.pop()); renderAll(); showStatus('Ready! press Start'); }
 
     /* expose small debug */
     window.__whot = { startGame, renderAll };
